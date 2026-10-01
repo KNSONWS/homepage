@@ -1,0 +1,180 @@
+{
+  "versions": [
+    {
+      "documentKey": "agb",
+      "version": "v1",
+      "validFrom": "2026-02-02",
+      "status": "superseded",
+      "changeNote": "Erste Fassung der AGB auf webklar.com",
+      "source": "webklar.com@217bbdc:src/pages/AGB.tsx"
+    },
+    {
+      "documentKey": "agb",
+      "version": "v2",
+      "validFrom": "2026-09-27",
+      "status": "superseded",
+      "changeNote": "Modul C Hosting ergänzt (Hosting-Abo, Wartungs-Abo mit beliebig vielen Postfächern)",
+      "source": "webklar.com@dc27e50:src/pages/AGB.tsx"
+    },
+    {
+      "documentKey": "agb",
+      "version": "v3",
+      "validFrom": "2026-09-27",
+      "status": "superseded",
+      "changeNote": "An die Vertragsbedingungen angeglichen (Wechsel, Zusatzspeicher, Sicherheit), Verweise auf die Abo-Bedingungen",
+      "source": "webklar.com@2c1a4c1:src/pages/AGB.tsx"
+    },
+    {
+      "documentKey": "agb",
+      "version": "v4",
+      "validFrom": "2026-09-28",
+      "status": "superseded",
+      "changeNote": "Haftungssatz in Modul C entfällt; Kündigung nach Verlängerung für Verbraucher",
+      "source": "webklar.com@2bffca4:src/pages/AGB.tsx"
+    },
+    {
+      "documentKey": "agb",
+      "version": "v5",
+      "validFrom": "2026-09-28",
+      "status": "current",
+      "changeNote": "Verbraucher-Kündigung als Ausnahme formuliert",
+      "source": "webklar.com@044f788:src/pages/AGB.tsx"
+    },
+    {
+      "documentKey": "agb",
+      "version": "v6",
+      "validFrom": "2026-09-28",
+      "status": "draft",
+      "changeNote": "§ 11 Haftung neu nach dem Muster der Abo-Bedingungen (noch nicht live)",
+      "source": "webklar.com@f40e889:src/pages/AGB.tsx"
+    },
+    {
+      "documentKey": "abo-bedingungen",
+      "version": "v1",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Erste Fassung: Wartungs-Abo 50 €/Monat über Stripe mit Stundenkonto",
+      "source": "kundenbereich@65429aa:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "abo-bedingungen",
+      "version": "v2",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Vertragsunterlagen Version 2 nach Rechtsrunde, Postfächer und Domains bei Hetzner",
+      "source": "kundenbereich@4ab154b:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "abo-bedingungen",
+      "version": "v3",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Version 3: Mindestlaufzeit 12 Monate; Kontakt support@webklar.com",
+      "source": "kundenbereich@dbabbf1:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "abo-bedingungen",
+      "version": "v4",
+      "validFrom": "2026-09-30",
+      "status": "current",
+      "changeNote": "Version 4: Hosting-Abo und Wartungs-Abo, Postfächer, Zusatzspeicher, Wechsel, AVV; § 13 Abs. 3 mit Ausnahme für Absatz 1; Hosting-Preis 20 €",
+      "source": "kundenbereich@e4efdac:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "avv",
+      "version": "v2",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Erste AVV als Anlage der Vertragsbedingungen Version 2 (in Version 1 nur „auf Anfrage“)",
+      "source": "kundenbereich@4ab154b:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "avv",
+      "version": "v3",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "AVV als Anlage der Vertragsbedingungen Version 3",
+      "source": "kundenbereich@dbabbf1:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "avv",
+      "version": "v4",
+      "validFrom": "2026-09-30",
+      "status": "current",
+      "changeNote": "AVV als Anlage der Vertragsbedingungen Version 4 (Anlagen 1 und 3 überarbeitet)",
+      "source": "kundenbereich@e4efdac:public/abo-bedingungen.html"
+    },
+    {
+      "documentKey": "datenschutz",
+      "version": "v1",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Stand 25.09.2026: Abo, Übernahmegutschrift",
+      "source": "kundenbereich@48b13f4:public/datenschutz.html"
+    },
+    {
+      "documentKey": "datenschutz",
+      "version": "v2",
+      "validFrom": "2026-09-26",
+      "status": "superseded",
+      "changeNote": "Stand 26.09.2026: Chat mit Bildern, Dateien und Sprachnachrichten",
+      "source": "kundenbereich@35d98da:public/datenschutz.html"
+    },
+    {
+      "documentKey": "datenschutz",
+      "version": "v3",
+      "validFrom": "2026-09-27",
+      "status": "superseded",
+      "changeNote": "Stand 27.09.2026: E-Mail bei Hetzner statt Porkbun, UptimeRobot, Bestellungen im Portal",
+      "source": "kundenbereich@7e86928:public/datenschutz.html"
+    },
+    {
+      "documentKey": "datenschutz",
+      "version": "v4",
+      "validFrom": "2026-09-30",
+      "status": "current",
+      "changeNote": "Stand 30.09.2026: Livegang mit Vertragsbedingungen Version 4",
+      "source": "kundenbereich@78b4d7b:public/datenschutz.html"
+    },
+    {
+      "documentKey": "impressum",
+      "version": "v1",
+      "validFrom": "2026-02-02",
+      "status": "superseded",
+      "changeNote": "Erste Fassung",
+      "source": "webklar.com@6af24d2:src/pages/Impressum.tsx"
+    },
+    {
+      "documentKey": "impressum",
+      "version": "v2",
+      "validFrom": "2026-09-25",
+      "status": "current",
+      "changeNote": "Neu nach DDG mit Gesellschaftern; Kontakt support@webklar.com",
+      "source": "webklar.com@f74ddfb:src/pages/Impressum.tsx"
+    },
+    {
+      "documentKey": "widerruf",
+      "version": "v1",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Widerrufsformular im Kundenportal",
+      "source": "kundenbereich@65429aa:public/widerrufen.html"
+    },
+    {
+      "documentKey": "widerruf",
+      "version": "v2",
+      "validFrom": "2026-09-25",
+      "status": "superseded",
+      "changeNote": "Überarbeitet nach Rechtsrunde",
+      "source": "kundenbereich@4ab154b:public/widerrufen.html"
+    },
+    {
+      "documentKey": "widerruf",
+      "version": "v3",
+      "validFrom": "2026-09-29",
+      "status": "current",
+      "changeNote": "Vertrag bzw. Bestellung auswählbar (§ 312k, § 356a BGB)",
+      "source": "kundenbereich@7ffe95f:public/widerrufen.html"
+    }
+  ]
+}

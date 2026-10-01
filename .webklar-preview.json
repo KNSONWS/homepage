@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "type": "static",
+  "branch": "test",
+  "displayName": "tickte-system",
+  "templateName": "webklar-preview-template",
+  "projectType": "project",
+  "public": false
+}
