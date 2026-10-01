@@ -1,0 +1,786 @@
+/* ==========================================================================
+   device-frames.css – realistische, fluide Geräterahmen
+   MacBook Pro 14" (ab 2021, mit Notch) · iPhone 16 Pro / 17 Pro
+
+   Eine Breite skaliert alles:
+     .dm-macbook { width: 760px }   .dm-iphone { width: 220px }
+   Die Rahmengeometrie steht in cqw des Wurzelelements (container-type).
+   Die Bildschirm-Chrome (Menüleiste, Safari, Statusleiste) ist in
+   Design-Punkten gezeichnet: --dm-u = 1 pt des echten Bildschirms.
+   Seiteninhalt gehört in .dm-canvas (feste Designgröße, wird per
+   device-frames.js bzw. React-Hook mit transform: scale() eingepasst):
+     MacBook-Webviewport 1512 x 893, iPhone-Bildschirm 402 x 874.
+
+   Maße (echte Geräte):
+   MacBook  Unterteil = Wurzelbreite = 114 % des Deckels (L = 87,72cqw);
+            Alurand 0,35 % L, schwarzes Glas 1,4 % L (Seiten/oben),
+            Kinn 3,1 % L, Deckelecke 2,0 % L, Panelecke 0,7 % S,
+            Display 1512 x 982 pt, Notch 188 x 37 pt.
+   iPhone   Gehäuse 71,5 x 149,6 mm, Display 402 x 874 pt,
+            Titanband 1,35 % + schwarzer Rand 2,05 % der Gehäusebreite,
+            konzentrische Radien, Dynamic Island 126 x 37 pt @ 11 pt.
+   ========================================================================== */
+
+/* Wurzeln mit Spezifität 0: Klassen der Seite (Tailwind usw.) gewinnen */
+:where(.dm-macbook, .dm-iphone) {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  container-type: inline-size;
+  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  user-select: none;
+}
+:where(.dm-macbook) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* box-sizing nur für die eigenen dm-Elemente, nicht für den Inhalt */
+:where(.dm-macbook, .dm-iphone) :where([class^="dm-"], [class*=" dm-"]),
+:where(.dm-macbook, .dm-iphone) :where([class^="dm-"], [class*=" dm-"])::before,
+:where(.dm-macbook, .dm-iphone) :where([class^="dm-"], [class*=" dm-"])::after {
+  box-sizing: border-box;
+}
+
+/* Systemschrift nur für die Chrome-Ebenen */
+.dm-macbook__menubar,
+.dm-macbook__toolbar,
+.dm-iphone__statusbar {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-style: normal;
+  line-height: 1;
+  text-align: left;
+  text-transform: none;
+  text-rendering: geometricPrecision;   /* kein Hinting-Zittern bei kleinen Größen */
+}
+:where(.dm-macbook__menubar, .dm-macbook__toolbar, .dm-iphone__statusbar) svg {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Inhalts-Canvas (gemeinsam)
+   -------------------------------------------------------------------------- */
+.dm-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--dm-dw) * 1px);
+  height: calc(var(--dm-dh) * 1px);
+  transform-origin: 0 0;
+  /* JS setzt --dm-k; ohne JS rechnet CSS Breite / Designbreite */
+  transform: scale(var(--dm-k, tan(atan2(100cqw, calc(var(--dm-dw) * 1px)))));
+  overflow: hidden;
+  container-type: inline-size;          /* cqw im Inhalt = Design-Pixel */
+  -webkit-user-select: text;
+  user-select: text;
+}
+/* Gerät als Bild (role="img"): Inhalt ist Dekoration, nicht bedienbar
+   (zusätzlich zum inert-Attribut der Canvas) */
+:where(.dm-macbook, .dm-iphone)[role="img"] .dm-canvas {
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ==========================================================================
+   MacBook Pro 14"
+   ========================================================================== */
+.dm-macbook {
+  /* Silber (Standard) */
+  --dm-al-hi: #f7f8f9;
+  --dm-al-1: #e0e1e4;
+  --dm-al-2: #cbcdd1;
+  --dm-al-3: #b1b4b9;
+  --dm-al-4: #8f9298;
+  --dm-al-5: #6d7076;
+  --dm-al-6: #4b4d52;
+  --dm-al-spec: rgba(255, 255, 255, .85);
+  --dm-al-sheen: rgba(255, 255, 255, .5);
+  --dm-al-edge: rgba(40, 42, 46, .5);
+  --dm-hinge-1: #08080a;
+  --dm-hinge-2: #2b2c2f;
+  --dm-hinge-3: #46484c;
+  --dm-foot: #2a2b2e;
+  --dm-bezel: #060607;
+}
+.dm-macbook[data-color="space-black"] {
+  --dm-al-hi: #8a8c91;
+  --dm-al-1: #56585c;
+  --dm-al-2: #424448;
+  --dm-al-3: #333539;
+  --dm-al-4: #26272a;
+  --dm-al-5: #1b1c1e;
+  --dm-al-6: #111213;
+  --dm-al-spec: rgba(255, 255, 255, .3);
+  --dm-al-sheen: rgba(255, 255, 255, .16);
+  --dm-al-edge: rgba(0, 0, 0, .6);
+  --dm-hinge-1: #050506;
+  --dm-hinge-2: #1e1f21;
+  --dm-hinge-3: #34363a;
+  --dm-foot: #0b0b0c;
+}
+
+/* ---- Deckel: Aluschale, nur als haarfeiner Rand sichtbar ---- */
+.dm-macbook__lid {
+  position: relative;
+  z-index: 2;
+  width: 87.72cqw;
+  padding: .307cqw;                                 /* Rand 0,35 % L */
+  border-radius: 1.754cqw 1.754cqw .26cqw .26cqw;   /* 2,0 % L oben, unten fast eckig */
+  background:
+    /* Glanzstreifen und Kanten, die vom Licht wegdrehen */
+    linear-gradient(90deg,
+      rgba(0,0,0,.16) 0%, rgba(0,0,0,0) 9%,
+      var(--dm-al-sheen) 30%, rgba(255,255,255,0) 46%,
+      rgba(255,255,255,0) 64%, rgba(255,255,255,.22) 78%,
+      rgba(0,0,0,0) 90%, rgba(0,0,0,.2) 100%),
+    linear-gradient(180deg,
+      var(--dm-al-hi) 0%, var(--dm-al-1) 3%, var(--dm-al-2) 18%, var(--dm-al-1) 34%,
+      var(--dm-al-3) 55%, var(--dm-al-2) 72%, var(--dm-al-3) 90%, var(--dm-al-4) 100%);
+  box-shadow:
+    inset 0 max(.5px, .06cqw) 0 var(--dm-al-spec),               /* Glanzkante oben */
+    inset .19cqw 0 .16cqw rgba(0, 0, 0, .12),                    /* Seiten dunkler */
+    inset -.19cqw 0 .16cqw rgba(0, 0, 0, .2),
+    inset 0 -.26cqw .18cqw rgba(0, 0, 0, .28),                   /* Unterkante im Schatten */
+    0 0 0 max(.5px, .04cqw) var(--dm-al-edge);                   /* Außenkante */
+}
+/* Glanzlichter, die um den Rand wandern (ringförmig maskiert) */
+.dm-macbook__lid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: .307cqw;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(from 0deg at 50% 50%,
+    rgba(255,255,255,.35) 0deg, rgba(255,255,255,0) 16deg,
+    rgba(255,255,255,.4) 40deg, rgba(255,255,255,0) 52deg,
+    rgba(0,0,0,.1) 70deg, rgba(255,255,255,.18) 92deg, rgba(0,0,0,.12) 118deg,
+    rgba(0,0,0,.2) 160deg, rgba(0,0,0,.2) 200deg,
+    rgba(0,0,0,.06) 236deg, rgba(255,255,255,.28) 262deg, rgba(255,255,255,0) 286deg,
+    rgba(255,255,255,.55) 318deg, rgba(255,255,255,.08) 336deg,
+    rgba(255,255,255,.35) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+/* ---- schwarzes Glas mit Rändern ---- */
+.dm-macbook__glass {
+  position: relative;
+  padding: 1.228cqw 1.228cqw 2.719cqw;              /* 1,4 % L Seiten/oben, 3,1 % L Kinn */
+  border-radius: 1.447cqw 1.447cqw .1cqw .1cqw;
+  background: var(--dm-bezel);
+  box-shadow:
+    inset 0 0 0 max(.5px, .05cqw) rgba(0, 0, 0, .9),
+    inset 0 0 0 max(1px, .1cqw) rgba(255, 255, 255, .06);        /* Glaskante */
+}
+/* sehr schwache Spiegelung über dem ganzen Glas (stört nie die Lesbarkeit) */
+.dm-macbook__glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(122deg,
+      rgba(255,255,255,.055) 0%,
+      rgba(255,255,255,.028) 24%,
+      rgba(255,255,255,.008) 46%,
+      rgba(255,255,255,0) 60%);
+}
+
+/* ---- Display 1512 x 982 pt ---- */
+.dm-macbook__screen {
+  --dm-u: calc(100cqw / 1512);                     /* 1 macOS-Punkt */
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1512 / 982;
+  overflow: hidden;
+  border-radius: .593cqw .593cqw 0 0;               /* 0,7 % S, nur oben */
+  container-type: inline-size;
+  background:                                       /* Schreibtisch-Hintergrundbild */
+    radial-gradient(70% 140% at 12% 0%, #4a2f86 0%, rgba(74,47,134,0) 60%),
+    radial-gradient(60% 120% at 88% 0%, #1f3b6e 0%, rgba(31,59,110,0) 65%),
+    linear-gradient(180deg, #1b1430, #0b0a12);
+}
+/* Vollbild ohne Menüleiste: Streifen neben der Notch ist schwarz wie der Rand,
+   die Notch verschwindet darin */
+.dm-macbook[data-menubar="off"] .dm-macbook__screen { background: var(--dm-bezel); }
+
+/* macOS-Menüleiste (durchscheinend über dem Hintergrund, von der Notch geteilt) */
+.dm-macbook__menubar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(37 * var(--dm-u));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 calc(14 * var(--dm-u)) 0 calc(21 * var(--dm-u));
+  font-size: calc(13 * var(--dm-u));
+  font-weight: 500;
+  letter-spacing: .005em;
+  color: rgba(255, 255, 255, .94);
+  background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.18));
+  text-shadow: 0 0 calc(2 * var(--dm-u)) rgba(0, 0, 0, .25);
+  white-space: nowrap;
+}
+/* Text darf nie in die Notch laufen (auch nicht mit Mindestschriftgröße):
+   was nicht passt, bricht in eine unsichtbare zweite Zeile um */
+.dm-macbook__menus,
+.dm-macbook__extras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+}
+.dm-macbook__menus {
+  max-width: calc(633 * var(--dm-u));
+  column-gap: calc(19 * var(--dm-u));
+}
+.dm-macbook__extras {
+  max-width: calc(640 * var(--dm-u));
+  justify-content: flex-end;
+  column-gap: calc(17 * var(--dm-u));
+}
+.dm-macbook__menus > span,
+.dm-macbook__menus > b,
+.dm-macbook__extras > span { line-height: calc(37 * var(--dm-u)); }
+.dm-macbook__menus b { font-weight: 700; margin-left: calc(4 * var(--dm-u)); }
+.dm-macbook__apple { width: calc(14 * var(--dm-u)); height: calc(17 * var(--dm-u)); margin-top: calc(-2 * var(--dm-u)); }
+.dm-macbook__extras svg { height: calc(13 * var(--dm-u)); width: auto; }
+.dm-macbook__extras svg:nth-child(3) { height: calc(14 * var(--dm-u)); }
+.dm-macbook__extras span { margin-left: calc(2 * var(--dm-u)); white-space: pre; }
+
+/* Notch in Rahmenschwarz, mit kleinen Hohlkehlen und Kamera */
+.dm-macbook__notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 3;
+  width: calc(188 * var(--dm-u));
+  height: calc(37 * var(--dm-u));
+  transform: translateX(-50%);
+  background: var(--dm-bezel);
+  border-radius: 0 0 calc(13 * var(--dm-u)) calc(13 * var(--dm-u));
+}
+.dm-macbook__notch::before,
+.dm-macbook__notch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: calc(6 * var(--dm-u));
+  height: calc(6 * var(--dm-u));
+}
+.dm-macbook__notch::before {
+  right: 100%;
+  background: radial-gradient(circle at 0 100%, transparent calc(6 * var(--dm-u) - .5px), var(--dm-bezel) calc(6 * var(--dm-u)));
+}
+.dm-macbook__notch::after {
+  left: 100%;
+  background: radial-gradient(circle at 100% 100%, transparent calc(6 * var(--dm-u) - .5px), var(--dm-bezel) calc(6 * var(--dm-u)));
+}
+.dm-macbook__camera {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(8 * var(--dm-u));
+  height: calc(8 * var(--dm-u));
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 34%, rgba(150,140,255,.55) 0, rgba(80,70,170,.25) 22%, rgba(0,0,0,0) 46%),
+    radial-gradient(circle at 50% 50%, #0d0f1c 0, #07080f 55%, #15161c 70%, #050506 100%);
+  box-shadow: 0 0 0 calc(1.2 * var(--dm-u)) rgba(255, 255, 255, .035);
+}
+
+/* Safari-Fenster (maximiert), Dunkelmodus */
+.dm-macbook__window {
+  position: absolute;
+  top: calc(37 * var(--dm-u));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: calc(12 * var(--dm-u)) calc(12 * var(--dm-u)) calc(6 * var(--dm-u)) calc(6 * var(--dm-u));
+  background: #1c1c1e;
+}
+.dm-macbook[data-menubar="off"] .dm-macbook__window { border-radius: 0; }
+.dm-macbook__window::after {                        /* Fensterkontur im Dunkelmodus */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 max(.5px, calc(1 * var(--dm-u))) rgba(255, 255, 255, .13);
+  z-index: 2;
+}
+.dm-macbook__toolbar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: calc(52 * var(--dm-u));
+  padding: 0 calc(20 * var(--dm-u));
+  background: linear-gradient(180deg, #333336, #2c2c2f);
+  box-shadow: inset 0 calc(-1 * var(--dm-u)) 0 rgba(0, 0, 0, .75);
+  color: rgba(255, 255, 255, .62);
+  z-index: 1;
+}
+/* Ampel als eine Vektorgrafik: drei gleich große Kreise bei jeder Größe */
+.dm-macbook__lights { display: flex; margin-right: calc(28 * var(--dm-u)); }
+.dm-macbook__lights svg { width: calc(52 * var(--dm-u)); height: calc(12 * var(--dm-u)); }
+/* Vollbild: macOS blendet die Fenstertasten aus */
+.dm-macbook[data-menubar="off"] .dm-macbook__lights { visibility: hidden; }
+.dm-macbook__tool { display: flex; align-items: center; }
+.dm-macbook__tool--sidebar { gap: calc(5 * var(--dm-u)); margin-right: calc(30 * var(--dm-u)); }
+.dm-macbook__tool--sidebar svg:first-child { width: calc(22 * var(--dm-u)); }
+.dm-macbook__tool--sidebar svg:last-child { width: calc(9 * var(--dm-u)); opacity: .8; }
+.dm-macbook__tool--nav { gap: calc(26 * var(--dm-u)); }
+.dm-macbook__tool--nav svg { width: calc(10 * var(--dm-u)); }
+.dm-macbook__tool--nav svg:last-child { opacity: .35; }
+.dm-macbook__tool--right { margin-left: auto; gap: calc(28 * var(--dm-u)); }
+.dm-macbook__tool--right svg:nth-child(1) { width: calc(16 * var(--dm-u)); margin-top: calc(-3 * var(--dm-u)); }
+.dm-macbook__tool--right svg:nth-child(2) { width: calc(15 * var(--dm-u)); }
+.dm-macbook__tool--right svg:nth-child(3) { width: calc(18 * var(--dm-u)); }
+.dm-macbook__address {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(10 * var(--dm-u));
+  width: calc(640 * var(--dm-u));
+  height: calc(32 * var(--dm-u));
+  padding: 0 calc(11 * var(--dm-u));
+  transform: translate(-50%, -50%);
+  border-radius: calc(9 * var(--dm-u));
+  background: rgba(255, 255, 255, .085);
+  box-shadow: inset 0 0 0 max(.4px, calc(.5 * var(--dm-u))) rgba(255, 255, 255, .04);
+}
+.dm-macbook__address > svg:first-child { width: calc(18 * var(--dm-u)); opacity: .75; }
+.dm-macbook__address > svg:last-child { width: calc(14 * var(--dm-u)); opacity: .75; }
+.dm-macbook__url {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  gap: calc(6 * var(--dm-u));
+  font-size: calc(13.5 * var(--dm-u));
+  font-weight: 500;
+  color: rgba(255, 255, 255, .9);
+  letter-spacing: .005em;
+  white-space: nowrap;
+}
+.dm-macbook__url span { overflow: hidden; text-overflow: ellipsis; }
+.dm-macbook__url svg { width: calc(9.5 * var(--dm-u)); color: rgba(255, 255, 255, .6); margin-top: calc(-1 * var(--dm-u)); }
+
+/* Web-Viewport: 1512 x 893 pt */
+.dm-macbook__viewport {
+  --dm-dw: 1512;
+  --dm-dh: 893;
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+  background: #000;
+  container-type: inline-size;
+}
+
+/* ---- Scharnier (dunkel, endet unter dem Alurand des Deckels) ---- */
+.dm-macbook__hinge {
+  position: relative;
+  z-index: 1;
+  width: 87.2cqw;                                   /* 99,4 % L */
+  height: .78cqw;                                   /* 0,9 % L */
+  margin-top: -.05cqw;
+  border-radius: 0 0 .5cqw .5cqw / 0 0 .5cqw .5cqw;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,0) 4%, rgba(0,0,0,0) 96%, rgba(0,0,0,.55)),
+    linear-gradient(180deg, var(--dm-hinge-1) 0%, var(--dm-hinge-1) 22%, var(--dm-hinge-2) 50%, var(--dm-hinge-3) 66%, var(--dm-hinge-2) 80%, var(--dm-hinge-1) 100%);
+}
+
+/* ---- Unterteil: Aluplatte, fast genau von vorn gesehen ---- */
+.dm-macbook__base {
+  position: relative;
+  z-index: 2;
+  width: 100cqw;
+  height: 2.72cqw;                                  /* 3,1 % L */
+  margin-top: -.15cqw;
+  margin-bottom: .36cqw;                            /* Platz für die Füße */
+  border-radius: 1.2cqw 1.2cqw 2.2cqw 2.2cqw / .7cqw .7cqw 1.6cqw 1.6cqw;
+  background:
+    /* von oben gerundete Enden: auch die helle Oberkante dreht dort weg */
+    radial-gradient(4.2cqw 1.5cqw at 0 0, rgba(0,0,0,.24), rgba(0,0,0,.08) 55%, rgba(0,0,0,0)),
+    radial-gradient(4.2cqw 1.5cqw at 100% 0, rgba(0,0,0,.24), rgba(0,0,0,.08) 55%, rgba(0,0,0,0)),
+    /* Enden, die vom Licht wegdrehen, und breite Glanzstreifen */
+    linear-gradient(90deg,
+      rgba(0,0,0,.32) 0%, rgba(0,0,0,.08) 2.5%, rgba(0,0,0,0) 6%,
+      rgba(255,255,255,.16) 24%, rgba(255,255,255,0) 40%,
+      rgba(255,255,255,0) 62%, rgba(255,255,255,.1) 76%,
+      rgba(0,0,0,0) 94%, rgba(0,0,0,.08) 97.5%, rgba(0,0,0,.32) 100%),
+    /* Oberseite als schmaler Streifen -> Kante -> Front, die in den Schatten fällt */
+    linear-gradient(180deg,
+      var(--dm-al-hi) 0%, var(--dm-al-1) 4%, var(--dm-al-2) 10%, var(--dm-al-3) 14%,
+      var(--dm-al-5) 16%, var(--dm-al-2) 18.5%, var(--dm-al-hi) 21.5%, var(--dm-al-1) 28%,
+      var(--dm-al-2) 42%, var(--dm-al-3) 58%, var(--dm-al-4) 72%, var(--dm-al-5) 84%,
+      var(--dm-al-6) 93%, var(--dm-al-5) 100%);
+  box-shadow:
+    inset 0 calc(-1 * max(.5px, .044cqw)) 0 rgba(0, 0, 0, .35),
+    0 0 0 max(.5px, .03cqw) rgba(0, 0, 0, .2);
+}
+/* Daumenmulde in der Vorderkante */
+.dm-macbook__lip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 12.28cqw;                                  /* 14 % L */
+  height: 1.07cqw;                                  /* ca. 40 % der Höhe */
+  transform: translateX(-50%);
+  border-radius: 0 0 3.5cqw 3.5cqw / 0 0 1.07cqw 1.07cqw;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.22) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 78%, rgba(0,0,0,.22) 100%),
+    linear-gradient(180deg,
+      var(--dm-al-5) 0%, var(--dm-al-4) 30%, var(--dm-al-3) 60%, var(--dm-al-2) 86%, var(--dm-al-1) 100%);
+  box-shadow:
+    inset 0 .1cqw .18cqw rgba(0, 0, 0, .28),
+    0 max(.5px, .044cqw) 0 rgba(255, 255, 255, .5);  /* beleuchtete Unterlippe */
+}
+/* Gummifüße */
+.dm-macbook__base::before,
+.dm-macbook__base::after {
+  content: "";
+  position: absolute;
+  top: calc(100% - .08cqw);
+  width: 4.2cqw;
+  height: .26cqw;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--dm-foot) 30%, rgba(0, 0, 0, 0));
+  opacity: .7;                                      /* von vorn kaum sichtbar */
+}
+.dm-macbook__base::before { left: 8.5cqw; }
+.dm-macbook__base::after { right: 8.5cqw; }
+
+/* Kontakt- und Umgebungsschatten auf dem "Tisch" */
+.dm-macbook__shadow {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: -2.3cqw;
+  height: 3.2cqw;
+  pointer-events: none;
+}
+.dm-macbook__shadow::before,
+.dm-macbook__shadow::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+.dm-macbook__shadow::before {                       /* Kontakt */
+  left: 3%;
+  right: 3%;
+  top: .6cqw;
+  height: .85cqw;
+  background: rgba(0, 0, 0, .8);
+  filter: blur(.27cqw);
+}
+.dm-macbook__shadow::after {                        /* Umgebung */
+  left: 1%;
+  right: 1%;
+  top: .45cqw;
+  height: 2.7cqw;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, .5), rgba(0, 0, 0, .22) 60%, rgba(0, 0, 0, 0));
+  filter: blur(.44cqw);
+}
+
+/* sehr klein: Haarlinien weglassen, sie würden nur rauschen */
+@container (max-width: 320px) {
+  .dm-macbook__base::before,
+  .dm-macbook__base::after { display: none; }
+}
+
+/* ==========================================================================
+   iPhone 16 Pro
+   ========================================================================== */
+.dm-iphone {
+  /* Titan Natur (Standard): warmes, gebürstetes Mittelgrau */
+  --dm-t-hi: #e2ddd5;
+  --dm-t-1: #cac4ba;
+  --dm-t-2: #b3aca1;
+  --dm-t-3: #999287;
+  --dm-t-4: #7f786e;
+  --dm-t-5: #5c564e;
+  --dm-t-ant: rgba(112, 104, 92, .55);
+  --dm-t-glint: rgba(255, 255, 255, .38);
+  --dm-t-band-hl: rgba(255, 255, 255, .10);
+  --dm-status: #fff;
+}
+.dm-iphone[data-color="black"] {
+  --dm-t-hi: #6c6c70;
+  --dm-t-1: #46464a;
+  --dm-t-2: #363639;
+  --dm-t-3: #2a2a2d;
+  --dm-t-4: #1e1e21;
+  --dm-t-5: #111113;
+  --dm-t-top-light: rgba(255, 255, 255, .09);
+  --dm-t-ant: rgba(4, 4, 6, .6);
+  --dm-t-glint: rgba(255, 255, 255, .26);
+  --dm-t-band-hl: rgba(255, 255, 255, .06);
+  --dm-t-glint-opacity: .55;                        /* dunkles Titan spiegelt matter */
+}
+.dm-iphone[data-color="white"] {
+  --dm-t-hi: #ffffff;
+  --dm-t-1: #f1f1ef;
+  --dm-t-2: #e1e1de;
+  --dm-t-3: #cbcbc8;
+  --dm-t-4: #aeaeab;
+  --dm-t-5: #8a8a87;
+  --dm-t-ant: rgba(150, 150, 146, .55);
+  --dm-t-glint: rgba(255, 255, 255, .6);
+}
+.dm-iphone[data-color="desert"] {
+  --dm-t-hi: #f0e2d2;
+  --dm-t-1: #dcc4ab;
+  --dm-t-2: #c4a98f;
+  --dm-t-3: #ad9178;
+  --dm-t-4: #8f7560;
+  --dm-t-5: #6b5645;
+  --dm-t-ant: rgba(130, 104, 82, .55);
+  --dm-t-glint: rgba(255, 246, 236, .55);
+}
+/* heller App-Inhalt: dunkle Statusleiste und Home-Balken */
+.dm-iphone[data-statusbar="dark"] { --dm-status: #000; }
+
+/* ---- Titanband (von vorn sichtbar) ---- */
+.dm-iphone__body {
+  position: relative;
+  z-index: 1;
+  padding: 1.35cqw;                                 /* Titanband */
+  border-radius: 17.66cqw;                          /* 14,26 + 2,05 + 1,35 */
+  background:
+    /* Antennenlinien (nur auf dem Band sichtbar, Glas deckt den Rest) */
+    linear-gradient(180deg, transparent 10.9%, var(--dm-t-ant) 10.9%, var(--dm-t-ant) 11.15%, transparent 11.15%,
+                            transparent 88.85%, var(--dm-t-ant) 88.85%, var(--dm-t-ant) 89.1%, transparent 89.1%),
+    linear-gradient(90deg, transparent 23.6%, var(--dm-t-ant) 23.6%, var(--dm-t-ant) 24.1%, transparent 24.1%,
+                           transparent 75.9%, var(--dm-t-ant) 75.9%, var(--dm-t-ant) 76.4%, transparent 76.4%),
+    /* Licht von oben */
+    linear-gradient(180deg, var(--dm-t-top-light, rgba(255,255,255,.16)), rgba(255,255,255,0) 22%, rgba(0,0,0,0) 74%, rgba(0,0,0,.14)),
+    /* Umgebungsspiegelungen rundherum (0deg = oben) */
+    conic-gradient(from 0deg at 50% 50%,
+      var(--dm-t-1) 0deg, var(--dm-t-hi) 13deg, var(--dm-t-2) 26deg, var(--dm-t-3) 40deg,
+      var(--dm-t-hi) 58deg, var(--dm-t-2) 72deg, var(--dm-t-3) 100deg, var(--dm-t-4) 126deg,
+      var(--dm-t-2) 148deg, var(--dm-t-3) 166deg, var(--dm-t-4) 182deg, var(--dm-t-3) 196deg,
+      var(--dm-t-1) 211deg, var(--dm-t-3) 236deg, var(--dm-t-4) 258deg, var(--dm-t-2) 282deg,
+      var(--dm-t-hi) 302deg, var(--dm-t-2) 318deg, var(--dm-t-1) 336deg, var(--dm-t-hi) 347deg, var(--dm-t-1) 360deg);
+  box-shadow:
+    inset 0 0 0 max(.5px, .16cqw) rgba(0, 0, 0, .30),            /* Außenkante rollt weg */
+    inset 0 0 0 .42cqw rgba(0, 0, 0, .10),
+    inset 0 0 0 .82cqw var(--dm-t-band-hl, rgba(255, 255, 255, .16)), /* gerundetes Band fängt Licht */
+    0 0 0 max(.5px, .12cqw) rgba(0, 0, 0, .28),                  /* Silhouette auf hellem Grund */
+    0 .8cqw 1.6cqw rgba(0, 0, 0, .18),
+    0 5cqw 12cqw -1cqw rgba(0, 0, 0, .42);
+}
+/* Glanzpunkte auf dem Band (ringförmig maskiert, das Glas bleibt frei) */
+.dm-iphone__body::before {
+  content: "";
+  position: absolute;
+  inset: .16cqw;
+  z-index: 1;
+  padding: 1.1cqw;
+  border-radius: 17.5cqw;
+  pointer-events: none;
+  background: conic-gradient(from 0deg at 50% 50%,
+    rgba(255,255,255,.1) 0deg, rgba(255,255,255,0) 14deg,
+    var(--dm-t-glint) 26deg, rgba(255,255,255,0) 38deg,
+    rgba(255,255,255,0) 80deg, rgba(255,255,255,.14) 100deg, rgba(255,255,255,0) 116deg,
+    rgba(255,255,255,0) 146deg, rgba(255,255,255,.24) 156deg, rgba(255,255,255,0) 166deg,
+    rgba(0,0,0,.1) 190deg, rgba(255,255,255,0) 214deg,
+    rgba(255,255,255,.04) 250deg, rgba(255,255,255,.2) 284deg, rgba(255,255,255,.04) 306deg,
+    var(--dm-t-glint) 326deg, rgba(255,255,255,.7) 333deg, var(--dm-t-glint) 340deg,
+    rgba(255,255,255,.06) 350deg, rgba(255,255,255,.1) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: var(--dm-t-glint-opacity, .8);
+}
+
+/* ---- schwarzes Glas / Rand ---- */
+.dm-iphone__glass {
+  position: relative;
+  z-index: 2;
+  padding: 2.05cqw;
+  border-radius: 16.31cqw;
+  background: #020203;
+  box-shadow:
+    0 0 0 max(.5px, .12cqw) var(--dm-t-1),                       /* polierte Fase */
+    0 0 0 max(.6px, .3cqw) rgba(0, 0, 0, .18),
+    inset 0 0 0 max(.5px, .14cqw) rgba(255, 255, 255, .07);      /* Glaskante */
+}
+.dm-iphone__glass::after {                                       /* Spiegelung */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg,
+      rgba(255,255,255,.07) 0%,
+      rgba(255,255,255,.03) 22%,
+      rgba(255,255,255,.01) 40%,
+      rgba(255,255,255,0) 52%);
+}
+
+/* ---- Display 402 x 874 pt ---- */
+.dm-iphone__screen {
+  --dm-u: calc(100cqw / 402);                      /* 1 iOS-Punkt */
+  position: relative;
+  width: 100%;
+  aspect-ratio: 402 / 874;
+  overflow: hidden;
+  border-radius: 14.26cqw;                          /* 15,3 % der Displaybreite */
+  background: #000;
+  container-type: inline-size;
+}
+.dm-iphone__viewport {
+  --dm-dw: 402;
+  --dm-dh: 874;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+/* Statusleiste: Uhrzeit mittig im linken "Ohr", Symbole im rechten */
+.dm-iphone__statusbar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 3;
+  height: calc(59 * var(--dm-u));
+  color: var(--dm-status);
+  pointer-events: none;
+}
+.dm-iphone__time,
+.dm-iphone__indicators {
+  position: absolute;
+  top: calc(30 * var(--dm-u));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+}
+.dm-iphone__time {
+  left: calc(16 * var(--dm-u));
+  width: calc(110 * var(--dm-u));
+  font-size: calc(17 * var(--dm-u));
+  font-weight: 600;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.dm-iphone__indicators {
+  right: calc(16 * var(--dm-u));
+  width: calc(110 * var(--dm-u));
+  gap: calc(5.5 * var(--dm-u));
+}
+.dm-iphone__indicators svg:nth-child(1) { width: calc(18 * var(--dm-u)); }
+.dm-iphone__indicators svg:nth-child(2) { width: calc(16.5 * var(--dm-u)); }
+.dm-iphone__indicators svg:nth-child(3) { width: calc(27.5 * var(--dm-u)); }
+
+/* Dynamic Island */
+.dm-iphone__island {
+  position: absolute;
+  z-index: 4;
+  top: calc(11 * var(--dm-u));
+  left: 50%;
+  width: calc(126 * var(--dm-u));
+  height: calc(37 * var(--dm-u));
+  transform: translateX(-50%);
+  border-radius: calc(18.5 * var(--dm-u));
+  background: #000;
+}
+.dm-iphone__island i {                              /* Frontkamera unter dem Glas */
+  position: absolute;
+  top: 50%;
+  right: calc(12.5 * var(--dm-u));
+  width: calc(12 * var(--dm-u));
+  height: calc(12 * var(--dm-u));
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 34%, rgba(130,140,255,.42) 0, rgba(60,60,140,.18) 24%, rgba(0,0,0,0) 48%),
+    radial-gradient(circle, #0b0d18 0, #06070c 58%, #101116 74%, #000 100%);
+}
+
+/* Home-Balken 140 x 5 pt, 8 pt vom unteren Rand */
+.dm-iphone__home {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: calc(8 * var(--dm-u));
+  width: calc(140 * var(--dm-u));
+  height: calc(5 * var(--dm-u));
+  transform: translateX(-50%);
+  border-radius: calc(3 * var(--dm-u));
+  background: var(--dm-status);
+  opacity: .92;
+}
+
+/* ---- Seitentasten (stehen ca. 0,75 % der Gehäusebreite über) ---- */
+.dm-iphone__buttons i {
+  position: absolute;
+  z-index: 0;
+  width: 2.2cqw;
+  border-radius: .9cqw / 1.6cqw;
+}
+.dm-iphone__btn--action,
+.dm-iphone__btn--vol-up,
+.dm-iphone__btn--vol-down {
+  left: -.78cqw;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(0,0,0,.25)),
+    linear-gradient(90deg, var(--dm-t-4) 0%, var(--dm-t-hi) 22%, var(--dm-t-2) 48%, var(--dm-t-3) 100%);
+  box-shadow: inset 0 0 0 max(.4px, .1cqw) rgba(0, 0, 0, .22);
+}
+.dm-iphone__btn--side,
+.dm-iphone__btn--camera {
+  right: -.78cqw;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(0,0,0,.25)),
+    linear-gradient(270deg, var(--dm-t-4) 0%, var(--dm-t-hi) 22%, var(--dm-t-2) 48%, var(--dm-t-3) 100%);
+  box-shadow: inset 0 0 0 max(.4px, .1cqw) rgba(0, 0, 0, .22);
+}
+.dm-iphone__btn--action   { top: 18.2%; height: 4.3%; }
+.dm-iphone__btn--vol-up   { top: 28.6%; height: 7.3%; }
+.dm-iphone__btn--vol-down { top: 38.6%; height: 7.3%; }
+.dm-iphone__btn--side     { top: 30%;   height: 12%; }
+/* Kamerasteuerung: fast bündig, Saphirglas in Titaneinfassung */
+.dm-iphone__buttons .dm-iphone__btn--camera {
+  top: 60%;
+  height: 8%;
+  right: -.42cqw;
+  border-radius: .8cqw / 1.2cqw;
+  background:                                       /* Saphirglanz über farblich passendem Teil */
+    linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 22%, rgba(255,255,255,0) 78%, rgba(255,255,255,.14)),
+    linear-gradient(270deg, var(--dm-t-5) 0%, var(--dm-t-2) 28%, var(--dm-t-4) 58%, var(--dm-t-3) 100%);
+  box-shadow:
+    0 0 0 max(.5px, .14cqw) var(--dm-t-3),
+    inset 0 0 0 max(.4px, .08cqw) rgba(255, 255, 255, .12);
+}
+
+/* sehr klein: Antennenlinien weglassen */
+@container (max-width: 140px) {
+  .dm-iphone__body { --dm-t-ant: transparent; }
+}
